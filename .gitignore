@@ -1,0 +1,6 @@
+.env
+/vendor/
+/storage/mail/*
+!/storage/mail/.gitkeep
+.DS_Store
+Thumbs.db
