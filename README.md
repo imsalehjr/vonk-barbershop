@@ -72,7 +72,7 @@ barbershop/
 ## Running locally (XAMPP)
 
 1. Place the project in `C:\xampp\htdocs\barbershop` and start Apache and MySQL.
-2. Open phpMyAdmin and import `database/schema.sql`, then `database/seed.sql`.
+2. In phpMyAdmin, create a database `vonk_barbershop` (collation `utf8mb4_unicode_ci`), select it and import `database/schema.sql`, then `database/seed.sql`. Optionally import `database/demo.sql` for fictional sample appointments around today's date.
 3. Copy `.env.example` to `.env` and adjust the database credentials if needed.
 4. Visit `http://localhost/barbershop`.
 5. Go to `http://localhost/barbershop/admin/` and create the first admin account.
@@ -89,7 +89,29 @@ By default `MAIL_DRIVER=log`: emails are saved as `.eml` files in `storage/mail/
 
 ## Screenshots
 
-_Add screenshots of the home page, booking flow (mobile) and admin dashboard here._
+| Home | Booking on mobile |
+|---|---|
+| ![Home page](docs/screenshots/home-desktop.png) | ![Booking flow on mobile](docs/screenshots/booking-mobile.png) |
+
+| Admin dashboard | Services & prices |
+|---|---|
+| ![Admin dashboard](docs/screenshots/admin-dashboard.png) | ![Services page](docs/screenshots/services-desktop.png) |
+
+## Deploying a live demo (free)
+
+The project runs on any shared host with PHP 8.0+, MySQL/MariaDB and `.htaccess` support. [InfinityFree](https://www.infinityfree.com) works well for a free demo: PHP 8, MySQL, free SSL, no ads and full `.htaccess` support.
+
+1. Create a free account and a hosting account with a free subdomain.
+2. In the control panel, create a MySQL database and note the host, name, user and password.
+3. Upload the project with FTP (for example FileZilla) into `htdocs/`. The root `.htaccess` sends every request to `public/`, so `src/`, `storage/` and `.env` stay unreachable.
+4. In phpMyAdmin, select your database and import `schema.sql`, then `seed.sql` and optionally `demo.sql`.
+5. Create `.env` on the server with the live values: `APP_URL=https://your-subdomain`, `APP_ENV=production` and the database credentials.
+6. Enable SSL for the subdomain in the control panel.
+7. Visit `/admin/` and create the admin account right away, before anyone else does.
+
+**Email on free hosting:** PHP `mail()` is blocked on most free hosts. Keep `MAIL_DRIVER=log` for a demo (the confirmation page still shows the manage link), or use a free external SMTP service such as Brevo with `MAIL_DRIVER=smtp`.
+
+**For real clients:** use paid hosting (a few euros per month) with a custom domain, automatic backups and working email.
 
 ## Possible next steps
 

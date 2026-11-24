@@ -1,5 +1,3 @@
-USE vonk_barbershop;
-
 INSERT INTO services (id, name, description, duration_min, price_cents, sort_order) VALUES
 (1, 'Classic Cut', 'Scissor or clipper cut, washed and styled.', 30, 2800, 1),
 (2, 'Skin Fade', 'Sharp fade down to the skin, finished with a razor line-up.', 45, 3400, 2),

@@ -1,8 +1,5 @@
 SET NAMES utf8mb4;
 
-CREATE DATABASE IF NOT EXISTS vonk_barbershop CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE vonk_barbershop;
-
 DROP TABLE IF EXISTS appointment_slots;
 DROP TABLE IF EXISTS appointments;
 DROP TABLE IF EXISTS barber_services;
