@@ -29,6 +29,10 @@ error_reporting(E_ALL);
 
 $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
 
+if (is_demo()) {
+    header('X-Robots-Tag: noindex, nofollow');
+}
+
 session_name('vonk_session');
 session_set_cookie_params([
     'lifetime' => 0,

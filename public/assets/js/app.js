@@ -54,7 +54,7 @@
         const service = value('service');
         const date = dateInput.value;
         if (!service || !date) {
-            hint('Choose a service and date to see available times.');
+            hint('Kies een behandeling en datum om de vrije tijden te zien.');
             return;
         }
 
@@ -69,7 +69,7 @@
 
         const current = ++requestId;
         slotsBox.setAttribute('aria-busy', 'true');
-        hint('Loading available times…');
+        hint('Vrije tijden laden…');
 
         try {
             const response = await fetch(`${slotsBox.dataset.slotsUrl}?${params}`, { headers: { Accept: 'application/json' } });
@@ -78,13 +78,13 @@
                 return;
             }
             if (!data.slots || data.slots.length === 0) {
-                hint('No times available on this day. Please try another date.');
+                hint('Op deze dag zijn geen tijden vrij. Probeer een andere datum.');
                 return;
             }
             let currentPart = '';
             slotsBox.replaceChildren(...data.slots.flatMap((time) => {
                 const nodes = [];
-                const part = time < '12:00' ? 'Morning' : (time < '17:00' ? 'Afternoon' : 'Evening');
+                const part = time < '12:00' ? 'Ochtend' : (time < '17:00' ? 'Middag' : 'Avond');
                 if (part !== currentPart) {
                     currentPart = part;
                     const heading = document.createElement('p');
@@ -107,7 +107,7 @@
                 return nodes;
             }));
         } catch (error) {
-            hint('Could not load times. Please refresh the page and try again.');
+            hint('De tijden konden niet worden geladen. Ververs de pagina en probeer het opnieuw.');
         } finally {
             slotsBox.removeAttribute('aria-busy');
         }

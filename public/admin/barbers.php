@@ -33,9 +33,9 @@ if (is_post()) {
     ];
 
     $v = (new Validator())
-        ->required('name', $form['name'], 'Name')
-        ->maxLength('name', $form['name'], 100, 'Name')
-        ->maxLength('bio', $form['bio'], 255, 'Bio');
+        ->required('name', $form['name'], 'Naam')
+        ->maxLength('name', $form['name'], 100, 'Naam')
+        ->maxLength('bio', $form['bio'], 255, 'Korte bio');
 
     if (!$v->fails()) {
         $pdo->beginTransaction();
@@ -55,7 +55,7 @@ if (is_post()) {
         }
         $pdo->commit();
 
-        flash('success', $editId > 0 ? 'Barber updated.' : 'Barber added.');
+        flash('success', $editId > 0 ? 'Barbier bijgewerkt.' : 'Barbier toegevoegd.');
         redirect('admin/barbers.php');
     }
     $errors = $v->errors();
@@ -63,20 +63,20 @@ if (is_post()) {
 
 $barbers = $pdo->query('SELECT b.*, COUNT(bs.service_id) AS service_count FROM barbers b LEFT JOIN barber_services bs ON bs.barber_id = b.id GROUP BY b.id ORDER BY b.sort_order, b.name')->fetchAll();
 
-view('admin/header', ['title' => 'Barbers', 'active' => 'barbers.php']);
+view('admin/header', ['title' => 'Barbiers', 'active' => 'barbers.php']);
 ?>
-<div class="admin-title"><h1>Barbers</h1></div>
+<div class="admin-title"><h1>Barbiers</h1></div>
 
 <div class="table-wrap">
     <table class="table">
-        <thead><tr><th>Name</th><th>Services</th><th>Status</th><th class="actions"><span class="sr-only">Actions</span></th></tr></thead>
+        <thead><tr><th>Naam</th><th>Behandelingen</th><th>Status</th><th class="actions"><span class="sr-only">Acties</span></th></tr></thead>
         <tbody>
         <?php foreach ($barbers as $b): ?>
             <tr>
                 <td><?= e($b['name']) ?><br><span class="muted small"><?= e($b['bio']) ?></span></td>
                 <td class="num"><?= (int) $b['service_count'] ?></td>
-                <td><span class="badge badge-<?= $b['is_active'] ? 'completed' : 'no_show' ?>"><?= $b['is_active'] ? 'Active' : 'Inactive' ?></span></td>
-                <td class="actions"><a class="btn btn-ghost btn-sm" href="<?= e(url('admin/barbers.php?edit=' . (int) $b['id'])) ?>#barber-form">Edit</a></td>
+                <td><span class="badge badge-<?= $b['is_active'] ? 'completed' : 'no_show' ?>"><?= $b['is_active'] ? 'Actief' : 'Inactief' ?></span></td>
+                <td class="actions"><a class="btn btn-ghost btn-sm" href="<?= e(url('admin/barbers.php?edit=' . (int) $b['id'])) ?>#barber-form">Bewerken</a></td>
             </tr>
         <?php endforeach; ?>
         </tbody>
@@ -84,33 +84,33 @@ view('admin/header', ['title' => 'Barbers', 'active' => 'barbers.php']);
 </div>
 
 <form class="card" id="barber-form" method="post" action="<?= e(url('admin/barbers.php')) ?>" novalidate>
-    <h2><?= $editId > 0 ? 'Edit barber' : 'Add a barber' ?></h2>
+    <h2><?= $editId > 0 ? 'Barbier bewerken' : 'Barbier toevoegen' ?></h2>
     <?= Csrf::field() ?>
     <input type="hidden" name="id" value="<?= (int) $editId ?>">
     <div class="form-grid">
         <div class="field">
-            <label for="name">Name</label>
+            <label for="name">Naam</label>
             <input type="text" id="name" name="name" maxlength="100" required value="<?= e((string) $form['name']) ?>">
             <?php if (isset($errors['name'])): ?><p class="field-error"><?= e($errors['name']) ?></p><?php endif; ?>
         </div>
         <div class="field">
-            <label for="sort_order">Sort order</label>
+            <label for="sort_order">Volgorde</label>
             <input type="number" id="sort_order" name="sort_order" min="0" max="999" value="<?= (int) $form['sort_order'] ?>">
         </div>
     </div>
     <div class="field">
-        <label for="bio">Short bio</label>
+        <label for="bio">Korte bio</label>
         <input type="text" id="bio" name="bio" maxlength="255" value="<?= e((string) $form['bio']) ?>">
         <?php if (isset($errors['bio'])): ?><p class="field-error"><?= e($errors['bio']) ?></p><?php endif; ?>
     </div>
     <fieldset class="field">
-        <legend class="label">Services this barber offers</legend>
+        <legend class="label">Behandelingen die deze barbier doet</legend>
         <?php foreach ($services as $s): ?>
             <label class="check"><input type="checkbox" name="services[]" value="<?= (int) $s['id'] ?>"<?= in_array((int) $s['id'], $form['services'], true) ? ' checked' : '' ?>> <span><?= e($s['name']) ?></span></label>
         <?php endforeach; ?>
     </fieldset>
-    <label class="check"><input type="checkbox" name="is_active" value="1"<?= $form['is_active'] ? ' checked' : '' ?>> <span>Active (can be booked)</span></label>
-    <button class="btn btn-primary" type="submit"><?= $editId > 0 ? 'Save changes' : 'Add barber' ?></button>
-    <?php if ($editId > 0): ?><a class="btn btn-ghost" href="<?= e(url('admin/barbers.php')) ?>">Cancel</a><?php endif; ?>
+    <label class="check"><input type="checkbox" name="is_active" value="1"<?= $form['is_active'] ? ' checked' : '' ?>> <span>Actief (kan geboekt worden)</span></label>
+    <button class="btn btn-primary" type="submit"><?= $editId > 0 ? 'Wijzigingen opslaan' : 'Barbier toevoegen' ?></button>
+    <?php if ($editId > 0): ?><a class="btn btn-ghost" href="<?= e(url('admin/barbers.php')) ?>">Annuleren</a><?php endif; ?>
 </form>
 <?php view('admin/footer'); ?>

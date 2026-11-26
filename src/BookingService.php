@@ -12,12 +12,12 @@ final class BookingService
     {
         $service = Availability::activeService($serviceId);
         if (!$service) {
-            throw new BookingException('This service is not available.');
+            throw new BookingException('Deze behandeling is niet beschikbaar.');
         }
 
         $candidates = self::availableBarbersAt($serviceId, $barberId, $date, $time);
         if ($candidates === []) {
-            throw new BookingException('Sorry, this time slot was just taken. Please choose another time.');
+            throw new BookingException('Sorry, deze tijd is net door iemand anders geboekt. Kies een andere tijd.');
         }
 
         $token = bin2hex(random_bytes(32));
@@ -60,7 +60,7 @@ final class BookingService
             }
         }
 
-        throw new BookingException('Sorry, this time slot was just taken. Please choose another time.');
+        throw new BookingException('Sorry, deze tijd is net door iemand anders geboekt. Kies een andere tijd.');
     }
 
     public static function reschedule(array $appointment, int $barberId, string $date, string $time): void
@@ -68,7 +68,7 @@ final class BookingService
         $serviceId = (int) $appointment['service_id'];
         $candidates = self::availableBarbersAt($serviceId, $barberId, $date, $time, (int) $appointment['id']);
         if ($candidates === []) {
-            throw new BookingException('This time slot is no longer available. Please choose another time.');
+            throw new BookingException('Deze tijd is niet meer beschikbaar. Kies een andere tijd.');
         }
 
         $duration = (int) ((strtotime($appointment['end_at']) - strtotime($appointment['start_at'])) / 60);
@@ -93,7 +93,7 @@ final class BookingService
             }
         }
 
-        throw new BookingException('This time slot is no longer available. Please choose another time.');
+        throw new BookingException('Deze tijd is niet meer beschikbaar. Kies een andere tijd.');
     }
 
     public static function setStatus(int $appointmentId, string $status): void

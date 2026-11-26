@@ -73,9 +73,8 @@ function post_int(string $key): int
 
 function format_date(string $datetime): string
 {
-    $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
     $d = new DateTimeImmutable($datetime);
-    return $days[(int) $d->format('N') - 1] . ' ' . $d->format('j M Y');
+    return weekday_name((int) $d->format('N')) . ' ' . $d->format('j') . ' ' . month_name((int) $d->format('n')) . ' ' . $d->format('Y');
 }
 
 function format_time(string $datetime): string
@@ -85,7 +84,26 @@ function format_time(string $datetime): string
 
 function weekday_name(int $weekday): string
 {
-    return ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][$weekday - 1];
+    return ['maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag', 'zondag'][$weekday - 1];
+}
+
+function month_name(int $month, bool $short = false): string
+{
+    $names = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'];
+    $name = $names[$month - 1];
+    return $short ? substr($name, 0, 3) : $name;
+}
+
+function format_short_date(string $datetime): string
+{
+    $d = new DateTimeImmutable($datetime);
+    return substr(weekday_name((int) $d->format('N')), 0, 2) . ' ' . $d->format('j') . ' ' . month_name((int) $d->format('n'), true);
+}
+
+function format_datetime(string $datetime): string
+{
+    $d = new DateTimeImmutable($datetime);
+    return $d->format('j') . ' ' . month_name((int) $d->format('n'), true) . ' ' . $d->format('Y H:i');
 }
 
 function view(string $template, array $data = []): void
@@ -100,6 +118,11 @@ function json_response(array $data, int $status = 200): void
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode($data, JSON_THROW_ON_ERROR);
     exit;
+}
+
+function is_demo(): bool
+{
+    return Env::get('DEMO_MODE', 'false') === 'true';
 }
 
 function client_ip(): string

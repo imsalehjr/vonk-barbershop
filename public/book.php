@@ -43,21 +43,21 @@ if (is_post()) {
     $validator = new Validator();
 
     if (count($recent) >= 5) {
-        $validator->add('form', 'You have made several bookings in a short time. Please call us to book more.');
+        $validator->add('form', 'Je hebt in korte tijd meerdere afspraken gemaakt. Bel ons als je er nog meer wilt maken.');
     }
     if (!Availability::activeService($old['service'])) {
-        $validator->add('service', 'Please choose a service.');
+        $validator->add('service', 'Kies een behandeling.');
     }
     if ($old['barber'] > 0 && !in_array($old['service'], $barberServices[$old['barber']] ?? [], true)) {
-        $validator->add('barber', 'This barber does not offer the chosen service.');
+        $validator->add('barber', 'Deze barbier biedt de gekozen behandeling niet aan.');
     }
     $validator
         ->date('date', $old['date'])
         ->time('time', $old['time'])
-        ->required('name', $old['name'], 'Name')
-        ->maxLength('name', $old['name'], 100, 'Name')
-        ->required('email', $old['email'], 'Email')
-        ->maxLength('email', $old['email'], 190, 'Email')
+        ->required('name', $old['name'], 'Naam')
+        ->maxLength('name', $old['name'], 100, 'Naam')
+        ->required('email', $old['email'], 'E-mailadres')
+        ->maxLength('email', $old['email'], 190, 'E-mailadres')
         ->email('email', $old['email'])
         ->phone('phone', $old['phone']);
 
@@ -90,19 +90,19 @@ if ($old['service'] > 0 && $old['date'] !== '' && (new Validator())->date('date'
     $slots = Availability::slots($old['service'], $old['barber'], $old['date']);
 }
 
-view('layout/header', ['title' => 'Book an appointment', 'active' => 'book.php']);
+view('layout/header', ['title' => 'Afspraak maken', 'active' => 'book.php']);
 ?>
 <section class="page-head">
     <div class="container">
-        <h1>Book an appointment</h1>
-        <p class="lead">Pick a service, a barber and a time. You'll get a confirmation by email.</p>
+        <h1>Afspraak maken</h1>
+        <p class="lead">Kies een behandeling, een barbier en een tijd. Je krijgt een bevestiging per e-mail.</p>
     </div>
 </section>
 <section class="section">
     <div class="container narrow">
         <?php if ($errors !== []): ?>
             <div class="alert alert-error" role="alert">
-                <?= e($errors['form'] ?? 'Please check the fields marked below.') ?>
+                <?= e($errors['form'] ?? 'Controleer de velden hieronder.') ?>
             </div>
         <?php endif; ?>
 
@@ -110,7 +110,7 @@ view('layout/header', ['title' => 'Book an appointment', 'active' => 'book.php']
             <?= Csrf::field() ?>
 
             <fieldset class="step">
-                <legend><span class="step-number">1</span> Service</legend>
+                <legend><span class="step-number">1</span> Behandeling</legend>
                 <div class="choice-grid">
                     <?php foreach ($services as $service): ?>
                         <label class="choice">
@@ -126,13 +126,13 @@ view('layout/header', ['title' => 'Book an appointment', 'active' => 'book.php']
             </fieldset>
 
             <fieldset class="step">
-                <legend><span class="step-number">2</span> Barber</legend>
+                <legend><span class="step-number">2</span> Barbier</legend>
                 <div class="choice-grid">
                     <label class="choice">
                         <input type="radio" name="barber" value="0"<?= $old['barber'] === 0 ? ' checked' : '' ?>>
                         <span class="choice-body">
-                            <span class="choice-title">No preference</span>
-                            <span class="choice-meta">First available barber</span>
+                            <span class="choice-title">Geen voorkeur</span>
+                            <span class="choice-meta">Eerste barbier die vrij is</span>
                         </span>
                     </label>
                     <?php foreach ($barbers as $barber): ?>
@@ -149,35 +149,35 @@ view('layout/header', ['title' => 'Book an appointment', 'active' => 'book.php']
             </fieldset>
 
             <fieldset class="step">
-                <legend><span class="step-number">3</span> Date &amp; time</legend>
+                <legend><span class="step-number">3</span> Datum &amp; tijd</legend>
                 <?php view('partials/booking-fields', ['old' => $old, 'errors' => $errors, 'slots' => $slots]); ?>
             </fieldset>
 
             <fieldset class="step">
-                <legend><span class="step-number">4</span> Your details</legend>
+                <legend><span class="step-number">4</span> Jouw gegevens</legend>
                 <div class="field">
-                    <label for="name">Name</label>
+                    <label for="name">Naam</label>
                     <input type="text" id="name" name="name" required maxlength="100" autocomplete="name" value="<?= e($old['name']) ?>"<?= isset($errors['name']) ? ' aria-invalid="true"' : '' ?>>
                     <?php if (isset($errors['name'])): ?><p class="field-error"><?= e($errors['name']) ?></p><?php endif; ?>
                 </div>
                 <div class="field">
-                    <label for="email">Email</label>
+                    <label for="email">E-mailadres</label>
                     <input type="email" id="email" name="email" required maxlength="190" autocomplete="email" value="<?= e($old['email']) ?>"<?= isset($errors['email']) ? ' aria-invalid="true"' : '' ?>>
                     <?php if (isset($errors['email'])): ?><p class="field-error"><?= e($errors['email']) ?></p><?php endif; ?>
                 </div>
                 <div class="field">
-                    <label for="phone">Phone <span class="optional">(optional)</span></label>
+                    <label for="phone">Telefoonnummer <span class="optional">(optioneel)</span></label>
                     <input type="tel" id="phone" name="phone" maxlength="20" autocomplete="tel" value="<?= e($old['phone']) ?>"<?= isset($errors['phone']) ? ' aria-invalid="true"' : '' ?>>
                     <?php if (isset($errors['phone'])): ?><p class="field-error"><?= e($errors['phone']) ?></p><?php endif; ?>
                 </div>
                 <div class="hp-field" aria-hidden="true">
-                    <label for="website">Leave this field empty</label>
+                    <label for="website">Laat dit veld leeg</label>
                     <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
                 </div>
             </fieldset>
 
-            <button class="btn btn-primary btn-block" type="submit">Confirm booking</button>
-            <p class="muted small">By booking you agree to our <a href="<?= e(url('privacy.php')) ?>">privacy statement</a>. Free cancellation up to <?= Env::int('CANCEL_CUTOFF_HOURS', 2) ?> hours before.</p>
+            <button class="btn btn-primary btn-block" type="submit">Afspraak bevestigen</button>
+            <p class="muted small">Door te boeken ga je akkoord met onze <a href="<?= e(url('privacy.php')) ?>">privacyverklaring</a>. Gratis annuleren kan tot <?= Env::int('CANCEL_CUTOFF_HOURS', 2) ?> uur van tevoren.</p>
         </form>
     </div>
 </section>

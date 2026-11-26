@@ -97,6 +97,17 @@ By default `MAIL_DRIVER=log`: emails are saved as `.eml` files in `storage/mail/
 |---|---|
 | ![Admin dashboard](docs/screenshots/admin-dashboard.png) | ![Services page](docs/screenshots/services-desktop.png) |
 
+## Demo mode
+
+The public demo runs with `DEMO_MODE=true` in `.env`:
+
+- A banner explains that Vonk is fictional and that data is wiped every night. Pages send `noindex`.
+- Mail is never sent, even with `MAIL_DRIVER=smtp`. Messages are written to `storage/mail/` instead.
+- The admin login shows the demo account from `DEMO_ADMIN_EMAIL` / `DEMO_ADMIN_PASSWORD`, and `/admin/setup.php` is disabled.
+- `php scripts/reset-demo.php` rebuilds the database from `database/*.sql`, recreates the demo admin and clears stored mail. Run it nightly with a cron job. It only runs from the command line and refuses to run without `DEMO_MODE=true`.
+
+The interface is in Dutch.
+
 ## Deploying a live demo (free)
 
 The project runs on any shared host with PHP 8.0+, MySQL/MariaDB and `.htaccess` support. [InfinityFree](https://www.infinityfree.com) works well for a free demo: PHP 8, MySQL, free SSL, no ads and full `.htaccess` support.

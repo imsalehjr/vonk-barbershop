@@ -4,7 +4,7 @@ require dirname(__DIR__, 2) . '/src/bootstrap.php';
 
 header('Cache-Control: no-store');
 
-if (Auth::hasAnyAdmin()) {
+if (is_demo() || Auth::hasAnyAdmin()) {
     redirect('admin/login.php');
 }
 
@@ -18,11 +18,11 @@ if (is_post()) {
     $confirm = $_POST['password_confirm'] ?? '';
 
     if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
-        $error = 'Please enter a valid email address.';
+        $error = 'Vul een geldig e-mailadres in.';
     } elseif (!is_string($password) || mb_strlen($password) < 12) {
-        $error = 'Use a password of at least 12 characters.';
+        $error = 'Gebruik een wachtwoord van minimaal 12 tekens.';
     } elseif ($password !== $confirm) {
-        $error = 'The passwords do not match.';
+        $error = 'De wachtwoorden zijn niet gelijk.';
     } else {
         $pdo = Database::pdo();
         $pdo->beginTransaction();
@@ -32,17 +32,17 @@ if (is_post()) {
                 ->execute([$email, password_hash($password, PASSWORD_DEFAULT)]);
         }
         $pdo->commit();
-        flash('success', 'Admin account created. You can now log in.');
+        flash('success', 'Beheerdersaccount aangemaakt. Je kunt nu inloggen.');
         redirect('admin/login.php');
     }
 }
 
 view('admin/auth-layout', [
-    'title' => 'Create admin account',
-    'intro' => 'No admin exists yet. Create the first account. This page locks itself once an admin exists.',
+    'title' => 'Beheerdersaccount aanmaken',
+    'intro' => 'Er is nog geen beheerder. Maak het eerste account aan. Daarna is deze pagina niet meer te gebruiken.',
     'error' => $error,
     'email' => $email,
     'confirm' => true,
-    'button' => 'Create account',
+    'button' => 'Account aanmaken',
     'passwordAutocomplete' => 'new-password',
 ]);

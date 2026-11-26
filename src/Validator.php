@@ -9,7 +9,7 @@ final class Validator
     public function required(string $field, string $value, string $label): self
     {
         if ($value === '') {
-            $this->errors[$field] = "$label is required.";
+            $this->errors[$field] = "$label is verplicht.";
         }
         return $this;
     }
@@ -17,7 +17,7 @@ final class Validator
     public function maxLength(string $field, string $value, int $max, string $label): self
     {
         if (mb_strlen($value) > $max) {
-            $this->errors[$field] = "$label may be at most $max characters.";
+            $this->errors[$field] = "$label mag maximaal $max tekens zijn.";
         }
         return $this;
     }
@@ -25,7 +25,7 @@ final class Validator
     public function email(string $field, string $value): self
     {
         if ($value !== '' && filter_var($value, FILTER_VALIDATE_EMAIL) === false) {
-            $this->errors[$field] = 'Please enter a valid email address.';
+            $this->errors[$field] = 'Vul een geldig e-mailadres in.';
         }
         return $this;
     }
@@ -33,7 +33,7 @@ final class Validator
     public function phone(string $field, string $value): self
     {
         if ($value !== '' && !preg_match('/^\+?[0-9 ()-]{8,20}$/', $value)) {
-            $this->errors[$field] = 'Please enter a valid phone number.';
+            $this->errors[$field] = 'Vul een geldig telefoonnummer in.';
         }
         return $this;
     }
@@ -42,7 +42,7 @@ final class Validator
     {
         $d = DateTimeImmutable::createFromFormat('!Y-m-d', $value);
         if (!$d || $d->format('Y-m-d') !== $value) {
-            $this->errors[$field] = 'Please choose a valid date.';
+            $this->errors[$field] = 'Kies een geldige datum.';
         }
         return $this;
     }
@@ -50,7 +50,7 @@ final class Validator
     public function time(string $field, string $value): self
     {
         if (!preg_match('/^([01]\d|2[0-3]):(00|15|30|45)$/', $value)) {
-            $this->errors[$field] = 'Please choose a valid time.';
+            $this->errors[$field] = 'Kies een geldige tijd.';
         }
         return $this;
     }

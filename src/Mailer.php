@@ -9,9 +9,9 @@ final class Mailer
     public static function sendBookingMail(string $type, array $appointment, ?string $token = null): bool
     {
         $subjects = [
-            'confirmed' => 'Your appointment is confirmed',
-            'rescheduled' => 'Your appointment has been changed',
-            'cancelled' => 'Your appointment has been cancelled',
+            'confirmed' => 'Je afspraak is bevestigd',
+            'rescheduled' => 'Je afspraak is gewijzigd',
+            'cancelled' => 'Je afspraak is geannuleerd',
         ];
 
         ob_start();
@@ -37,7 +37,7 @@ final class Mailer
             $mail->Body = $html;
             $mail->AltBody = trim(html_entity_decode(strip_tags(str_replace(['<br>', '</p>'], "\n", $html)), ENT_QUOTES, 'UTF-8'));
 
-            if (Env::get('MAIL_DRIVER') === 'smtp') {
+            if (Env::get('MAIL_DRIVER') === 'smtp' && !is_demo()) {
                 $mail->isSMTP();
                 $mail->Host = Env::get('SMTP_HOST', '');
                 $mail->Port = Env::int('SMTP_PORT', 587);

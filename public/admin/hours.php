@@ -28,7 +28,7 @@ if (is_post()) {
             foreach ($rows as $row) {
                 $stmt->execute($row);
             }
-            flash('success', 'Opening hours saved. Existing appointments are not changed.');
+            flash('success', 'Openingstijden opgeslagen. Bestaande afspraken blijven staan.');
         }
         redirect('admin/hours.php');
     }
@@ -43,10 +43,10 @@ if (is_post()) {
 
         $v = (new Validator())->date('date', $date);
         if (!$closed && (!$validTime($open) || !$validTime($close) || $open >= $close)) {
-            $v->add('time', 'Enter valid custom hours.');
+            $v->add('time', 'Vul geldige afwijkende tijden in.');
         }
         if ($barberId > 0 && !in_array($barberId, array_map('intval', array_column($barbers, 'id')), true)) {
-            $v->add('barber', 'Unknown barber.');
+            $v->add('barber', 'Onbekende barbier.');
         }
 
         if ($v->fails()) {
@@ -59,14 +59,14 @@ if (is_post()) {
             $stmt->execute($barberId ? [$date, $barberId] : [$date]);
             $affected = (int) $stmt->fetchColumn();
 
-            flash('success', 'Exception added.' . ($affected > 0 ? " Note: $affected existing appointment(s) on this day. Move or cancel them manually." : ''));
+            flash('success', 'Uitzondering toegevoegd.' . ($affected > 0 ? " Let op: er staan $affected afspraak/afspraken op deze dag. Verplaats of annuleer die zelf." : ''));
         }
         redirect('admin/hours.php');
     }
 
     if ($action === 'delete_exception') {
         $pdo->prepare('DELETE FROM schedule_exceptions WHERE id = ?')->execute([post_int('exception_id')]);
-        flash('success', 'Exception removed.');
+        flash('success', 'Uitzondering verwijderd.');
         redirect('admin/hours.php');
     }
 }
@@ -74,52 +74,52 @@ if (is_post()) {
 $hours = $pdo->query('SELECT * FROM opening_hours ORDER BY weekday')->fetchAll();
 $exceptions = $pdo->query('SELECT e.*, b.name AS barber_name FROM schedule_exceptions e LEFT JOIN barbers b ON b.id = e.barber_id WHERE e.date >= CURDATE() ORDER BY e.date')->fetchAll();
 
-view('admin/header', ['title' => 'Opening hours', 'active' => 'hours.php']);
+view('admin/header', ['title' => 'Openingstijden', 'active' => 'hours.php']);
 ?>
-<div class="admin-title"><h1>Opening hours</h1></div>
+<div class="admin-title"><h1>Openingstijden</h1></div>
 
 <form class="card" method="post">
-    <h2>Weekly schedule</h2>
+    <h2>Weekrooster</h2>
     <?= Csrf::field() ?>
     <input type="hidden" name="action" value="weekly">
     <div class="table-wrap">
         <table class="table hours-table">
-            <thead><tr><th>Day</th><th>Opens</th><th>Closes</th><th>Closed</th></tr></thead>
+            <thead><tr><th>Dag</th><th>Open</th><th>Dicht</th><th>Gesloten</th></tr></thead>
             <tbody>
             <?php foreach ($hours as $h): $d = (int) $h['weekday']; ?>
                 <tr>
                     <th scope="row"><?= e(weekday_name($d)) ?></th>
-                    <td><label class="sr-only" for="open-<?= $d ?>">Opens on <?= e(weekday_name($d)) ?></label><input type="time" id="open-<?= $d ?>" name="open[<?= $d ?>]" step="900" value="<?= e(substr((string) $h['open_time'], 0, 5)) ?>"></td>
-                    <td><label class="sr-only" for="close-<?= $d ?>">Closes on <?= e(weekday_name($d)) ?></label><input type="time" id="close-<?= $d ?>" name="close[<?= $d ?>]" step="900" value="<?= e(substr((string) $h['close_time'], 0, 5)) ?>"></td>
-                    <td><label class="check"><input type="checkbox" name="closed[<?= $d ?>]" value="1"<?= $h['is_closed'] ? ' checked' : '' ?>><span class="sr-only">Closed on <?= e(weekday_name($d)) ?></span></label></td>
+                    <td><label class="sr-only" for="open-<?= $d ?>">Open op <?= e(weekday_name($d)) ?></label><input type="time" id="open-<?= $d ?>" name="open[<?= $d ?>]" step="900" value="<?= e(substr((string) $h['open_time'], 0, 5)) ?>"></td>
+                    <td><label class="sr-only" for="close-<?= $d ?>">Dicht op <?= e(weekday_name($d)) ?></label><input type="time" id="close-<?= $d ?>" name="close[<?= $d ?>]" step="900" value="<?= e(substr((string) $h['close_time'], 0, 5)) ?>"></td>
+                    <td><label class="check"><input type="checkbox" name="closed[<?= $d ?>]" value="1"<?= $h['is_closed'] ? ' checked' : '' ?>><span class="sr-only">Gesloten op <?= e(weekday_name($d)) ?></span></label></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
         </table>
     </div>
-    <button class="btn btn-primary mt" type="submit">Save weekly schedule</button>
+    <button class="btn btn-primary mt" type="submit">Weekrooster opslaan</button>
 </form>
 
 <div class="card">
-    <h2>Holidays &amp; days off</h2>
-    <p class="muted">Close the shop on a specific date, set different hours, or give one barber a day off.</p>
+    <h2>Feestdagen &amp; vrije dagen</h2>
+    <p class="muted">Sluit de zaak op een bepaalde datum, stel afwijkende tijden in of geef één barbier een vrije dag.</p>
     <?php if ($exceptions !== []): ?>
         <div class="table-wrap">
             <table class="table">
-                <thead><tr><th>Date</th><th>Who</th><th>Hours</th><th>Note</th><th class="actions"><span class="sr-only">Actions</span></th></tr></thead>
+                <thead><tr><th>Datum</th><th>Wie</th><th>Tijden</th><th>Notitie</th><th class="actions"><span class="sr-only">Acties</span></th></tr></thead>
                 <tbody>
                 <?php foreach ($exceptions as $ex): ?>
                     <tr>
                         <td class="num"><?= e(format_date($ex['date'])) ?></td>
-                        <td><?= e($ex['barber_name'] ?? 'Whole shop') ?></td>
-                        <td><?= $ex['is_closed'] ? 'Closed' : e(substr($ex['open_time'], 0, 5) . '–' . substr($ex['close_time'], 0, 5)) ?></td>
+                        <td><?= e($ex['barber_name'] ?? 'Hele zaak') ?></td>
+                        <td><?= $ex['is_closed'] ? 'Gesloten' : e(substr($ex['open_time'], 0, 5) . '–' . substr($ex['close_time'], 0, 5)) ?></td>
                         <td><?= e($ex['note']) ?></td>
                         <td class="actions">
                             <form class="inline-form" method="post">
                                 <?= Csrf::field() ?>
                                 <input type="hidden" name="action" value="delete_exception">
                                 <input type="hidden" name="exception_id" value="<?= (int) $ex['id'] ?>">
-                                <button class="btn btn-danger btn-sm" type="submit">Remove</button>
+                                <button class="btn btn-danger btn-sm" type="submit">Verwijderen</button>
                             </form>
                         </td>
                     </tr>
@@ -130,44 +130,44 @@ view('admin/header', ['title' => 'Opening hours', 'active' => 'hours.php']);
     <?php endif; ?>
 
     <form method="post" novalidate>
-        <h3>Add exception</h3>
+        <h3>Uitzondering toevoegen</h3>
         <?= Csrf::field() ?>
         <input type="hidden" name="action" value="add_exception">
         <div class="form-grid">
             <div class="field">
-                <label for="ex-date">Date</label>
+                <label for="ex-date">Datum</label>
                 <input type="date" id="ex-date" name="date" required min="<?= date('Y-m-d') ?>">
             </div>
             <div class="field">
-                <label for="ex-barber">Applies to</label>
+                <label for="ex-barber">Geldt voor</label>
                 <select id="ex-barber" name="barber">
-                    <option value="0">Whole shop</option>
+                    <option value="0">Hele zaak</option>
                     <?php foreach ($barbers as $b): ?>
                         <option value="<?= (int) $b['id'] ?>"><?= e($b['name']) ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
             <div class="field">
-                <label for="ex-type">Type</label>
+                <label for="ex-type">Soort</label>
                 <select id="ex-type" name="type">
-                    <option value="closed">Closed / day off</option>
-                    <option value="custom">Different hours</option>
+                    <option value="closed">Gesloten / vrije dag</option>
+                    <option value="custom">Afwijkende tijden</option>
                 </select>
             </div>
             <div class="field">
-                <label for="ex-note">Note</label>
-                <input type="text" id="ex-note" name="note" maxlength="150" placeholder="e.g. King's Day">
+                <label for="ex-note">Notitie</label>
+                <input type="text" id="ex-note" name="note" maxlength="150" placeholder="bijv. Koningsdag">
             </div>
             <div class="field">
-                <label for="ex-open">Opens (for different hours)</label>
+                <label for="ex-open">Open (bij afwijkende tijden)</label>
                 <input type="time" id="ex-open" name="open" step="900">
             </div>
             <div class="field">
-                <label for="ex-close">Closes (for different hours)</label>
+                <label for="ex-close">Dicht (bij afwijkende tijden)</label>
                 <input type="time" id="ex-close" name="close" step="900">
             </div>
         </div>
-        <button class="btn btn-outline" type="submit">Add exception</button>
+        <button class="btn btn-outline" type="submit">Uitzondering toevoegen</button>
     </form>
 </div>
 <?php view('admin/footer'); ?>

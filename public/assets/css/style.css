@@ -266,6 +266,10 @@ input[aria-invalid="true"] { border-color: var(--danger); }
 
 .alert { padding: 1rem 1.25rem; border-radius: var(--radius-sm); margin: 1.25rem 0; border: 1px solid; }
 .alert-success { border-color: var(--success); color: var(--success); background: rgba(116, 195, 145, .08); }
+.alert-info { border-color: var(--accent); color: inherit; background: rgba(200, 162, 91, .1); }
+.alert-info code { font-size: .95em; }
+.demo-banner { background: var(--accent); color: var(--accent-ink); font-size: .875rem; padding: .55rem 0; line-height: 1.4; }
+.demo-banner a { color: inherit; font-weight: 600; text-decoration: underline; }
 .alert-error { border-color: var(--danger); color: var(--danger); background: rgba(226, 115, 95, .08); }
 
 .confirm-card { text-align: center; padding: 2.5rem 1.5rem; }

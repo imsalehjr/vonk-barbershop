@@ -12,7 +12,7 @@ if (Auth::check()) {
 }
 
 $error = '';
-$email = '';
+$email = is_demo() ? (string) Env::get('DEMO_ADMIN_EMAIL', '') : '';
 
 if (is_post()) {
     Csrf::verify();
@@ -20,18 +20,19 @@ if (is_post()) {
     $password = $_POST['password'] ?? '';
 
     if (Auth::tooManyAttempts()) {
-        $error = 'Too many failed attempts. Please wait 15 minutes and try again.';
+        $error = 'Te veel mislukte pogingen. Wacht 15 minuten en probeer het opnieuw.';
     } elseif (!is_string($password) || !Auth::attempt($email, $password)) {
-        $error = 'Invalid email or password.';
+        $error = 'E-mailadres of wachtwoord klopt niet.';
     } else {
         redirect('admin/index.php');
     }
 }
 
 view('admin/auth-layout', [
-    'title' => 'Admin login',
+    'title' => 'Inloggen beheer',
     'error' => $error,
     'email' => $email,
-    'button' => 'Log in',
+    'button' => 'Inloggen',
     'passwordAutocomplete' => 'current-password',
+    'demoLogin' => is_demo() ? ['email' => Env::get('DEMO_ADMIN_EMAIL', ''), 'password' => Env::get('DEMO_ADMIN_PASSWORD', '')] : null,
 ]);

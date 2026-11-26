@@ -3,7 +3,7 @@
 $selectedTime = $old['time'] ?? '';
 ?>
 <div class="field">
-    <label for="date">Date</label>
+    <label for="date">Datum</label>
     <input type="date" id="date" name="date" required
            min="<?= e($windowStart->format('Y-m-d')) ?>" max="<?= e($windowEnd->format('Y-m-d')) ?>"
            value="<?= e($old['date'] ?? '') ?>"
@@ -12,16 +12,16 @@ $selectedTime = $old['time'] ?? '';
 </div>
 
 <div class="field">
-    <span class="label" id="time-label">Time</span>
+    <span class="label" id="time-label">Tijd</span>
     <div class="slots" id="slots" data-slots-url="<?= e(url('api/slots.php')) ?>" data-ignore="<?= (int) ($ignoreAppointment ?? 0) ?>" role="radiogroup" aria-labelledby="time-label" aria-live="polite">
         <?php if ($slots === null): ?>
-            <p class="muted slots-hint">Choose a service and date to see available times.</p>
+            <p class="muted slots-hint">Kies een behandeling en datum om de vrije tijden te zien.</p>
         <?php elseif ($slots === []): ?>
-            <p class="muted slots-hint">No times available on this day. Please try another date.</p>
+            <p class="muted slots-hint">Op deze dag zijn geen tijden vrij. Probeer een andere datum.</p>
         <?php else: ?>
             <?php $currentPart = ''; ?>
             <?php foreach (array_keys($slots) as $time): ?>
-                <?php $part = $time < '12:00' ? 'Morning' : ($time < '17:00' ? 'Afternoon' : 'Evening'); ?>
+                <?php $part = $time < '12:00' ? 'Ochtend' : ($time < '17:00' ? 'Middag' : 'Avond'); ?>
                 <?php if ($part !== $currentPart): $currentPart = $part; ?>
                     <p class="slots-group"><?= e($part) ?></p>
                 <?php endif; ?>

@@ -9,12 +9,12 @@ foreach ($pdo->query('SELECT bs.barber_id, s.name FROM barber_services bs JOIN s
     $skills[(int) $row['barber_id']][] = $row['name'];
 }
 
-view('layout/header', ['title' => 'Our barbers', 'active' => 'barbers.php']);
+view('layout/header', ['title' => 'Onze barbiers', 'active' => 'barbers.php']);
 ?>
 <section class="page-head">
     <div class="container">
-        <h1>The team</h1>
-        <p class="lead">Three barbers, one standard: you leave looking better than you came in.</p>
+        <h1>Het team</h1>
+        <p class="lead">Drie barbiers, één standaard: je gaat beter de deur uit dan je binnenkwam.</p>
     </div>
 </section>
 <section class="section">
@@ -29,7 +29,7 @@ view('layout/header', ['title' => 'Our barbers', 'active' => 'barbers.php']);
                         <li><?= e($skill) ?></li>
                     <?php endforeach; ?>
                 </ul>
-                <a class="btn btn-outline btn-sm" href="<?= e(url('book.php?barber=' . (int) $barber['id'])) ?>">Book with <?= e($barber['name']) ?></a>
+                <a class="btn btn-outline btn-sm" href="<?= e(url('book.php?barber=' . (int) $barber['id'])) ?>">Boek bij <?= e($barber['name']) ?></a>
             </article>
         <?php endforeach; ?>
     </div>
