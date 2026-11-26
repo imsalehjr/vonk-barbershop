@@ -101,10 +101,10 @@ By default `MAIL_DRIVER=log`: emails are saved as `.eml` files in `storage/mail/
 
 The public demo runs with `DEMO_MODE=true` in `.env`:
 
-- A banner explains that Vonk is fictional and that data is wiped every night. Pages send `noindex`.
+- A banner explains that Vonk is fictional and that data is reset automatically. Pages send `noindex`.
 - Mail is never sent, even with `MAIL_DRIVER=smtp`. Messages are written to `storage/mail/` instead.
 - The admin login shows the demo account from `DEMO_ADMIN_EMAIL` / `DEMO_ADMIN_PASSWORD`, and `/admin/setup.php` is disabled.
-- `php scripts/reset-demo.php` rebuilds the database from `database/*.sql`, recreates the demo admin and clears stored mail. Run it nightly with a cron job. It only runs from the command line and refuses to run without `DEMO_MODE=true`.
+- `php scripts/reset-demo.php` rebuilds the database from `database/*.sql`, recreates the demo admin and clears stored mail. Run it with a cron job (the live demo resets every hour). It only runs from the command line and refuses to run without `DEMO_MODE=true`.
 
 The interface is in Dutch.
 

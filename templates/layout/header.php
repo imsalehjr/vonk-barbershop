@@ -23,7 +23,7 @@ $nav = ['' => 'Home', 'services.php' => 'Behandelingen', 'barbers.php' => 'Barbi
 <a class="skip-link" href="#main">Naar de inhoud</a>
 <?php if (is_demo()): ?>
 <aside class="demo-banner" aria-label="Demo-melding">
-    <div class="container"><strong>Demo:</strong> Vonk Barbershop is een verzonnen zaak. Je kunt alles uitproberen, maar er gaan geen e-mails de deur uit en alle gegevens worden elke nacht gewist. Vul geen echte gegevens in. <a href="<?= e(url('admin/login.php')) ?>">Bekijk ook het beheerpaneel</a>.</div>
+    <div class="container"><strong>Demo:</strong> Vonk Barbershop is een verzonnen zaak. Je kunt alles uitproberen, maar er gaan geen e-mails de deur uit en alle gegevens worden automatisch teruggezet. Vul geen echte gegevens in. <a href="<?= e(url('admin/login.php')) ?>">Bekijk ook het beheerpaneel</a>.</div>
 </aside>
 <?php endif; ?>
 <header class="site-header">

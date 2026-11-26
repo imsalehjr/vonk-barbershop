@@ -22,7 +22,7 @@ $items = [
 <a class="skip-link" href="#main">Naar de inhoud</a>
 <?php if (is_demo()): ?>
 <aside class="demo-banner" aria-label="Demo-melding">
-    <div class="container"><strong>Demo:</strong> Dit is het beheerpaneel van een demo. Je mag alles aanpassen; elke nacht wordt alles teruggezet.</div>
+    <div class="container"><strong>Demo:</strong> Dit is het beheerpaneel van een demo. Je mag alles aanpassen; alles wordt automatisch teruggezet.</div>
 </aside>
 <?php endif; ?>
 <header class="admin-header">
